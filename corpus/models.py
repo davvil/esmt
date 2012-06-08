@@ -29,3 +29,19 @@ class Sentence(models.Model):
 
     def __unicode__(self):
         return self.id
+
+class TranslationSystem(models.Model):
+    id = models.CharField(primary_key=True, max_length=100)
+
+    def __unicode__(self):
+        return self.id
+
+class Translation(models.Model):
+    sourceSentence = models.ForeignKey(Sentence)
+    language = models.ForeignKey(Language)
+    system = models.ForeignKey(TranslationSystem)
+    text = models.TextField()
+
+    def __unicode__(self):
+        return "%s - %s - %s" % (sourceSentence.__unicode__(), language.id, system.__unicode__())
+

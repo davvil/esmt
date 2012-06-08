@@ -8,20 +8,20 @@ import corpus.models as models
 
 optionParser = optparse.OptionParser(usage="", add_help_option=False)
 optionParser.add_option("-h", "--help", action="help", help=optparse.SUPPRESS_HELP)
-optionParser.add_option("-l", "--language", dest="language", help="source language (required)", metavar="LANG")
-optionParser.add_option("-i", "--id", dest="id", help="id of the document (if not given, the filename will be taken)",
+optionParser.add_option("-l", "--language", dest="language", help="target language (required)", metavar="LANG")
+optionParser.add_option("-i", "--id", dest="id", help="id of the source document",
                   metavar="ID")
-optionParser.add_option("-C", "--no-corpus", dest="noCorpus", help="do not create a corpus for this document", action="store_true")
+optionParser.add_option("-s", "--system", dest="system", help="system id")
 (options, args) = optionParser.parse_args()
 
 if len(args) == 0:
     optionParser.error("You have to give a file to import data from")
 if len(args) > 1:
-    optionParser.error("Importing more than one corpus at a time is not supported yet")
+    optionParser.error("Importing more than one translation at a time is not supported yet")
 if not options.language:
     optionParser.error("No language given")
 if not options.id:
-    options.id = os.path.basename(args[0])
+    optionParser.error("No document id given")
 
 log = sys.stdout
 
