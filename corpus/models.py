@@ -1,5 +1,13 @@
 from django.db import models
 
+class Corpus(models.Model):
+    id = models.CharField(primary_key = True, max_length = 200)
+    description = models.TextField()
+    documents = models.ManyToManyField("Document")
+
+    def __unicode__(self):
+        return self.id
+
 class Language(models.Model):
     id = models.CharField(primary_key = True, max_length = 2)
     humanReadable = models.CharField(max_length = 50)
