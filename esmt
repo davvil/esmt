@@ -1,0 +1,147 @@
+#!/bin/bash
+
+progname=`basename $0`
+basedir=`dirname $0`
+bindir=${basedir}/utils
+export PYTHONPATH=$basedir:$PYTHONPATH
+export DJANGO_SETTINGS_MODULE=evalServer.settings
+
+################################################################################
+# Utility functions
+
+function inArray() {
+    local searchFor=$1
+    local array=$2
+    local arrayExpr
+    local elem
+    local i=0
+    while true; do
+	arrayExpr="$array[$i]"
+	elem=${!arrayExpr}
+	[[ $elem == EOL ]] && return 1
+	[[ $elem == $searchFor ]] && return 0
+	((++i))
+    done
+}
+
+function arrayDescription() {
+    local arrayName=$1
+    local arrayDesc=$2
+    local i=0
+    local arrayExpr
+    while true; do
+	arrayExpr="$arrayName[$i]"
+	local name=${!arrayExpr}
+	[[ $name == EOL ]] && break
+	arrayExpr="$arrayDesc[$i]"
+	local desc=${!arrayExpr}
+	printf "   %-11s%s\n" $name "$desc"
+	((++i))
+    done
+}
+
+function assocArray() {
+    local searchFor=$1
+    local arrayName=$2
+    local arrayValues=$3
+    local i=0
+    local arrayExpr
+    while true; do
+	arrayExpr="$arrayName[$i]"
+	local name=${!arrayExpr}
+	[[ $name == EOL ]] && return 1
+	if [[ $name == $searchFor ]]; then
+	    arrayExpr="$arrayValues[$i]"
+	    echo ${!arrayExpr}
+	    return 0
+	fi
+	((++i))
+    done
+}
+
+
+################################################################################
+# Adding functions
+
+addFuncNames=("language" "document" "EOL")
+addHelp=(
+         "add language to the database"
+	 "add a document to the database"
+	)
+addCommands=("addLanguage.py" "addSourceDocument.py")
+
+function add() {
+    command=`assocArray $1 addFuncNames addCommands`
+    if [[ $? != 0 ]]; then
+	echo "Error: option '$1' not supported for 'add'" 1>&2
+	return 1
+    else
+	$bindir/$command "$@"
+    fi
+}
+
+function add_help() {
+    if [[ $# == 0 ]]; then
+	cat <<EOF
+Supported elements to add:
+
+EOF
+	arrayDescription addFuncNames addHelp
+    else
+	command=`assocArray $1 addFuncNames addCommands`
+	if [[ $? != 0 ]]; then
+	    echo "Error: option '$1' not supported for 'add'" 1>&2
+	    return 1
+	else
+	    echo "'$progname add $1' help"
+	    echo ""
+	    $bindir/$command --help
+	fi
+    fi
+}
+
+################################################################################
+
+function help() {
+    if [[ $# == 0 ]]; then
+	cat <<EOF
+usage: $progname <command> [options]
+
+Supported commands:
+EOF
+	arrayDescription supportedCommands helpForCommands
+
+cat <<EOF
+
+Use '$progname help <command>' for showing help for a specific command
+EOF
+    else
+	command=$1
+	shift
+	${command}_help "$@"
+    fi
+}
+
+supportedCommands=("add" "help" "EOL")
+helpForCommands=(
+                 "adds elements to the database"
+		 "shows this help"
+		)
+if [[ $# == 0 ]]; then
+    help
+elif inArray $1 supportedCommands; then
+    command=$1
+    shift
+    $command "$@"
+else
+    cat 1>&2 <<EOF
+Unsupported command: $1
+
+Use '$progname help' for a list of supported commands
+EOF
+    return 1
+fi
+
+# Local Variables
+# mode: shell
+# End:

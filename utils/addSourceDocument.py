@@ -6,7 +6,8 @@ import sys
 
 import corpus.models as models
 
-optionParser = optparse.OptionParser(usage="usage: %prog -l LANG [options] corpus")
+optionParser = optparse.OptionParser(usage="", add_help_option=False)
+optionParser.add_option("-h", "--help", action="help", help=optparse.SUPPRESS_HELP)
 optionParser.add_option("-l", "--language", dest="language", help="source language (required)", metavar="LANG")
 optionParser.add_option("-i", "--id", dest="id", help="id of the corpus (if not given, the filename will be taken",
                   metavar="ID")
