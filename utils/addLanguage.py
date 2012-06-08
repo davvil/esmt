@@ -15,8 +15,6 @@ if not options.id:
     optionParser.error("No language id given")
 if not options.language:
     optionParser.error("No language name given")
-if not options.id:
-    options.id = os.path.basename(args[0])
 
 log = sys.stdout
 
