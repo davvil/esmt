@@ -8,11 +8,12 @@ class SentenceInline(admin.TabularInline):
 
 class DocumentAdmin(admin.ModelAdmin):
     model = corpus.models.Sentence
-    fields = ('id', 'sourceLanguage'),
+    #fields = ('id', 'sourceLanguage'),
     inlines = [SentenceInline]
     classes = ['collapse']
 
 admin.site.register(corpus.models.Language)
 admin.site.register(corpus.models.Document, DocumentAdmin)
 admin.site.register(corpus.models.Corpus)
+admin.site.register(corpus.models.EvaluationCampaign)
 #admin.site.register(Sentence)

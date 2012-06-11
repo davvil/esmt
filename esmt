@@ -9,6 +9,22 @@ export DJANGO_SETTINGS_MODULE=evalServer.settings
 ################################################################################
 # Utility functions
 
+function error() {
+    echo -e "Error: $*" 1>&2
+    exit 1
+}
+
+function setCampaignArg() {
+    if [[ -z $ESMT_CAMPAIGN ]]; then
+	error "ESMT_CAMPAIGN not set!\n(If you truly want to work with no campaign, set it to 'none')"
+    elif [[ $ESMT_CAMPAIGN != none ]]; then
+	campaignArg="--campaign $ESMT_CAMPAIGN"
+    else
+	campaignArg=""
+    fi
+}
+	
+
 function inArray() {
     local searchFor=$1
     local array=$2
@@ -62,22 +78,32 @@ function assocArray() {
 ################################################################################
 # Add* functions
 
-addFuncNames=("language" "document" "corpus" "EOL")
+addFuncNames=("language" "document" "corpus" "campaign" "EOL")
 addHelp=(
          "add a language to the database"
 	 "add a document to the database"
 	 "add a corpus to the database"
+	 "add an evaluation campaign to the database"
 	)
-addCommands=("addLanguage.py" "addSourceDocument.py" "addCorpus.py")
+addCommands=("addLanguage.py"
+	"addSourceDocument.py"
+	"addCorpus.py"
+	"addEvaluationCampaign.py"
+	)
+addNeedsCampaign=(false true true false)
 
 function add() {
     command=`assocArray $1 addFuncNames addCommands`
+    needsCampaig=`assocArray $1 addFuncNames addNeedsCampaign`
     if [[ $? != 0 ]]; then
-	echo "Error: option '$1' not supported for 'add'" 1>&2
-	return 1
+	error "option '$1' not supported for 'add'"
     else
 	shift
-	$bindir/$command "$@"
+	campaignArg=""
+	if $needsCampaign; then
+	    setCampaignArg
+	fi
+	ESMT_PROG_NAME="$progname add $1" $bindir/$command $campaignArg "$@"
     fi
 }
 
@@ -89,12 +115,9 @@ function add_help() {
     else
 	command=`assocArray $1 addFuncNames addCommands`
 	if [[ $? != 0 ]]; then
-	    echo "Error: option '$1' not supported for 'add'" 1>&2
-	    return 1
+	    error "option '$1' not supported for 'add'"
 	else
-	    echo "'$progname add $1' help"
-	    echo ""
-	    $bindir/$command --help
+	    ESMT_PROG_NAME="$progname add $1" $bindir/$command --help
 	fi
     fi
 }

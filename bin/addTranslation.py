@@ -12,6 +12,7 @@ optionParser.add_option("-l", "--language", dest="language", help="target langua
 optionParser.add_option("-i", "--id", dest="id", help="id of the source document",
                   metavar="ID")
 optionParser.add_option("-s", "--system", dest="system", help="system id")
+optionParser.add_option("--campaign", dest="campaign", help="evaluation campaign for this document", metavar="ID")
 (options, args) = optionParser.parse_args()
 
 if len(args) == 0:
@@ -25,18 +26,28 @@ if not options.id:
 
 log = sys.stdout
 
-if models.Document.objects.filter(id=options.id):
-    sys.stderr.write("Error: document \"%s\" already exists in the database!\n" % options.id)
-else:
-    languageQuery = models.Language.objects.filter(id=options.language)
-    if not languageQuery:
-        sys.stderr.write("Error: language \"%s\" not found in the database!\nYou can add languages with the addLanguage.py command\n" % options.language)
-    else:
-        language = languageQuery[0]
-        fp = open(args[0])
-        log.write("Importing corpus \"%s\" from %s (language: %s)...\n" % (options.id, args[0], language.humanReadable))
-        d = models.Document(id=options.id, sourceLanguage=language)
-        d.save()
+try:
+    models.Corpus.objects.get(id=options.id):
+except models.Document.DoesNotExist:
+    sys.stderr.write("Error: corpus \"%s\" does not exist in the database!\n" % options.id)
+    sys.exit(1)
+try:
+    language = models.Language.objects.get(id=options.language)
+except models.Language.DoesNotExist:
+    sys.stderr.write("Error: language \"%s\" not found in the database!" % options.language)
+    sys.exit(1)
+campaign = None
+if options.campaign:
+    try:
+        campaign = models.EvaluationCampaign.objects.get(id=options.campaign)
+        d.campaigns.add(campaign)
+    except models.EvaluationCampaign.DoesNotExist:
+        sys.stderr.write("Error: Campaign \"%s\" not found in the database!\n" % options.campaign)
+        sys.exit(1)
+
+fp = open(args[0])
+log.write("Importing translations for \"%s\" from %s (language: %s)...\n" % (options.id, args[0], language.humanReadable))
+
         sentenceId = 1
         for l in fp:
             d.sentence_set.create(id="%s-%d" % (options.id, sentenceId), text=l)

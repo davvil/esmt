@@ -9,6 +9,7 @@ optionParser = optparse.OptionParser(usage="", add_help_option=False)
 optionParser.add_option("-h", "--help", action="help", help=optparse.SUPPRESS_HELP)
 optionParser.add_option("-i", "--id", dest="id", help="corpus id", metavar="ID")
 optionParser.add_option("-d", "--description", dest="description", help="corpus description", metavar="TEXT", default="")
+optionParser.add_option("--campaign", dest="campaign", help="evaluation campaign for this document", metavar="ID")
 (options, args) = optionParser.parse_args()
 
 if not options.id:
@@ -26,6 +27,13 @@ except models.Corpus.DoesNotExist:
     pass
 
 corpus = models.Corpus(id=options.id, description=options.description)
+if options.campaign:
+    try:
+        campaign = models.EvaluationCampaign.objects.get(id=options.campaign)
+        corpus.campaigns.add(campagin)
+    except models.EvaluationCampaign.DoesNotExist:
+        sys.stderr.write("Error: Campaign \"%s\" not found\n" % options.campaign)
+        sys.exit(1)
 corpus.save()
 for d in args:
     try:
