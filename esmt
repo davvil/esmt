@@ -2,7 +2,7 @@
 
 progname=`basename $0`
 basedir=`dirname $0`
-bindir=${basedir}/utils
+bindir=${basedir}/bin
 export PYTHONPATH=$basedir:$PYTHONPATH
 export DJANGO_SETTINGS_MODULE=evalServer.settings
 
@@ -59,9 +59,8 @@ function assocArray() {
     done
 }
 
-
 ################################################################################
-# Adding functions
+# Add* functions
 
 addFuncNames=("language" "document" "corpus" "EOL")
 addHelp=(

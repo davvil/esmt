@@ -3,7 +3,7 @@ from django.contrib import admin
 
 class SentenceInline(admin.TabularInline):
     model = corpus.models.Sentence
-    fields = ('id', 'text'),
+    fields = ('userId', 'text'),
     extra = 0
 
 class DocumentAdmin(admin.ModelAdmin):

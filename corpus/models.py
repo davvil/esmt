@@ -23,12 +23,12 @@ class Document(models.Model):
         return self.id
 
 class Sentence(models.Model):
-    id = models.CharField(primary_key=True, max_length=200)
+    userId = models.CharField(max_length=200)
     text = models.TextField()
     Document = models.ForeignKey(Document)
 
     def __unicode__(self):
-        return self.id
+        return self.userId
 
 class TranslationSystem(models.Model):
     id = models.CharField(primary_key=True, max_length=100)
