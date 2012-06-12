@@ -2,12 +2,12 @@ import corpus.models
 from django.contrib import admin
 
 class SentenceInline(admin.TabularInline):
-    model = corpus.models.Sentence
-    fields = ('userId', 'text'),
+    model = corpus.models.HumanSentence
+    fields = ('customId', 'text'),
     extra = 0
 
 class DocumentAdmin(admin.ModelAdmin):
-    model = corpus.models.Sentence
+    model = corpus.models.Document
     #fields = ('id', 'sourceLanguage'),
     inlines = [SentenceInline]
     classes = ['collapse']

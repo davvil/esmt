@@ -36,13 +36,15 @@ if options.campaign:
     except models.EvaluationCampaign.DoesNotExist:
         sys.stderr.write("Error: Campaign \"%s\" not found\n" % options.campaign)
         sys.exit(1)
-for d in args:
+for (n, d) in enumerate(args):
     try:
         document = models.Document.objects.get(id=d)
-        corpus.documents.add(document)
+        d2c = models.Document2Corpus(document=document, corpus=corpus, order=n)
+        d2c.save()
+        #corpus.documents.add(document)
     except models.Document.DoesNotExist:
         sys.stderr.write("Error: document \"%s\" not found\n" % d)
         corpus.delete()
         sys.exit(1)
-corpus.save()
+#corpus.save()
 log.write("Corpus \"%s\" added with %d documents.\n" % (corpus.id, len(corpus.documents.all())))

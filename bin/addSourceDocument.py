@@ -50,9 +50,9 @@ else:
         for (n, l) in enumerate(fp):
             s = d.sentence_set.create(text=l.strip())
             if not options.uniqueSentenceId:
-                s.userId = "%d" % (n+1)
+                s.customId = "%d" % (n+1)
             else:
-                s.userId = "%s__%d" % (d.id, (n+1))
+                s.customId = "%s__%d" % (d.id, (n+1))
             s.save()
         d.save()
         log.write("Document \"%s\" stored in database with %d sentences.\n" % (d.id, len(d.sentence_set.all())))
@@ -62,6 +62,6 @@ else:
             if campaign:
                 c.campaigns.add(campaign)
                 c.save()
-            c.documents.add(d)
-            c.save()
+            c2d = models.Document2Corpus(document=d, corpus=c, order=0)
+            c2d.save()
             log.write("Created corpus \"%s\" with this document.\n" % options.id)
