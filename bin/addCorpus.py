@@ -27,14 +27,15 @@ except models.Corpus.DoesNotExist:
     pass
 
 corpus = models.Corpus(id=options.id, description=options.description)
+corpus.save()
 if options.campaign:
     try:
         campaign = models.EvaluationCampaign.objects.get(id=options.campaign)
-        corpus.campaigns.add(campagin)
+        corpus.campaigns.add(campaign)
+        corpus.save()
     except models.EvaluationCampaign.DoesNotExist:
         sys.stderr.write("Error: Campaign \"%s\" not found\n" % options.campaign)
         sys.exit(1)
-corpus.save()
 for d in args:
     try:
         document = models.Document.objects.get(id=d)

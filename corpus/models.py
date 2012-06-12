@@ -34,7 +34,7 @@ class Document(models.Model):
 class Sentence(models.Model):
     userId = models.CharField(max_length=200)
     text = models.TextField()
-    Document = models.ForeignKey(Document)
+    document = models.ForeignKey(Document)
 
     def __unicode__(self):
         return self.userId

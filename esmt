@@ -93,8 +93,8 @@ addCommands=("addLanguage.py"
 addNeedsCampaign=(false true true false)
 
 function add() {
+    needsCampaign=`assocArray $1 addFuncNames addNeedsCampaign`
     command=`assocArray $1 addFuncNames addCommands`
-    needsCampaig=`assocArray $1 addFuncNames addNeedsCampaign`
     if [[ $? != 0 ]]; then
 	error "option '$1' not supported for 'add'"
     else
@@ -123,6 +123,43 @@ function add_help() {
 }
 
 ################################################################################
+# Dump* functions
+
+dumpFuncNames=("document" "corpus" "EOL")
+dumpHelp=(
+	 "dump a document from the database"
+	 "dump a corpus from the database"
+	)
+dumpCommands=("dumpDocument.py"
+	"dumpCorpus.py"
+	)
+
+function dump() {
+    command=`assocArray $1 dumpFuncNames dumpCommands`
+    if [[ $? != 0 ]]; then
+	error "option '$1' not supported for 'dump'"
+    else
+	shift
+	ESMT_PROG_NAME="$progname dump $1" $bindir/$command "$@"
+    fi
+}
+
+function dump_help() {
+    if [[ $# == 0 ]]; then
+	echo "Supported elements to dump:"
+	echo
+	arrayDescription dumpFuncNames dumpHelp
+    else
+	command=`assocArray $1 dumpFuncNames dumpCommands`
+	if [[ $? != 0 ]]; then
+	    error "option '$1' not supported for 'dump'"
+	else
+	    ESMT_PROG_NAME="$progname dump $1" $bindir/$command --help
+	fi
+    fi
+}
+
+################################################################################
 
 function help() {
     if [[ $# == 0 ]]; then
@@ -144,7 +181,7 @@ EOF
     fi
 }
 
-supportedCommands=("add" "help" "EOL")
+supportedCommands=("add" "dump" "help" "EOL")
 helpForCommands=(
                  "adds elements to the database"
 		 "shows this help"

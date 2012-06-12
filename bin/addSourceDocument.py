@@ -48,7 +48,7 @@ else:
                 sys.exit(1)
         d.save()
         for (n, l) in enumerate(fp):
-            s = d.sentence_set.create(text=l)
+            s = d.sentence_set.create(text=l.strip())
             if not options.uniqueSentenceId:
                 s.userId = "%d" % (n+1)
             else:
