@@ -160,6 +160,12 @@ function dump_help() {
 }
 
 ################################################################################
+# Start the server
+function start() {
+    python2 $basedir/manage.py runserver
+}
+
+################################################################################
 
 function help() {
     if [[ $# == 0 ]]; then
@@ -181,9 +187,11 @@ EOF
     fi
 }
 
-supportedCommands=("add" "dump" "help" "EOL")
+supportedCommands=("add" "dump" "start" "help" "EOL")
 helpForCommands=(
                  "adds elements to the database"
+		 "dumps elements of the database"
+		 "starts the evaluation server"
 		 "shows this help"
 		)
 
