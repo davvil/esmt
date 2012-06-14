@@ -1,11 +1,12 @@
 #!/usr/bin/env python2
 
 import optparse
+import os
 import sys
 
 from corpus.models import Language
 
-optionParser = optparse.OptionParser(usage="", add_help_option=False)
+optionParser = optparse.OptionParser(usage="%s <options> <document>" % os.environ["ESMT_PROG_NAME"], add_help_option=False)
 optionParser.add_option("-h", "--help", action="help", help=optparse.SUPPRESS_HELP)
 optionParser.add_option("-i", "--id", dest="id", help="language id (2 characters)", metavar="ID")
 optionParser.add_option("-l", "--language", dest="language", help="language name", metavar="LANG")

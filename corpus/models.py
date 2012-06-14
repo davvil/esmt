@@ -46,6 +46,10 @@ class TranslatedDocument(Document):
     source = models.ForeignKey("SourceDocument")
     system = models.ForeignKey("TranslationSystem")
 
+    def __unicode__(self):
+        return "%s (%s: %s => %s)" % (self.source.customId, self.system.id,
+                                      self.source.language.id, self.language.id)
+
 # A collection of documents
 class Corpus(models.Model):
     customId = models.CharField(max_length = 200)

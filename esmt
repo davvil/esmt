@@ -78,19 +78,23 @@ function assocArray() {
 ################################################################################
 # Add* functions
 
-addFuncNames=("language" "document" "corpus" "campaign" "EOL")
+addFuncNames=("language" "document" "corpus" "translation" "campaign" "system" "EOL")
 addHelp=(
          "add a language to the database"
 	 "add a document to the database"
 	 "add a corpus to the database"
+	 "add a translation to the database"
 	 "add an evaluation campaign to the database"
+	 "add a system to the database"
 	)
 addCommands=("addLanguage.py"
 	"addSourceDocument.py"
 	"addCorpus.py"
+	"addTranslation.py"
 	"addEvaluationCampaign.py"
+	"addSystem.py"
 	)
-addNeedsCampaign=(false true true false)
+addNeedsCampaign=(false true true true false false)
 
 function add() {
     needsCampaign=`assocArray $1 addFuncNames addNeedsCampaign`
